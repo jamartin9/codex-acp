@@ -5,8 +5,6 @@ version = "0.1.5"
 edition = "2024"
 description = "ACP-compatible agent that bridges the OpenAI Codex runtime with ACP clients over stdio."
 readme = "README.md"
-# Match the pinned toolchain in rust-toolchain.toml
-rust-version = "1.90"
 
 [dependencies]
 agent-client-protocol = { version = "0.4.7" }

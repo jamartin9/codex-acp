@@ -250,7 +250,17 @@ impl CodexAgent {
         mcp_servers: Vec<McpServer>,
     ) -> Result<CodexConfig, Error> {
         let mut session_config = self.config.clone();
-        let fs_guidance = include_str!("./prompt_fs_guidance.md");
+        let fs_guidance_content = if let Ok(guidance_path) = env::var("CODEX_FS_GUIDANCE_PATH") {
+            info!("Loading FS guidance from environment variable: {}", guidance_path);
+            std::fs::read_to_string(&guidance_path)
+                .unwrap_or_else(|e| {
+                    warn!("Failed to read FS guidance from {}: {}", guidance_path, e);
+                    include_str!("./prompt_fs_guidance.md").to_string()
+                })
+        } else {
+            include_str!("./prompt_fs_guidance.md").to_string()
+        };
+        let fs_guidance = fs_guidance_content.as_str();
 
         if let Some(mut base) = session_config.base_instructions.take() {
             if !base.contains("acp_fs") {
